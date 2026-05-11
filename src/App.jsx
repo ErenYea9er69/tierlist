@@ -6,9 +6,11 @@ const ITEMS = Array.from({ length: 19 }, (_, i) => `/items/${i + 1}.webp`);
 
 const STORAGE_KEY = "tierlist_users";
 
+const API_BASE = import.meta.env.DEV ? 'http://localhost:3001' : '';
+
 async function loadDB(key) {
   try {
-    const res = await fetch(`http://localhost:3001/api/db/${key}`);
+    const res = await fetch(`${API_BASE}/api/db/${key}`);
     const data = await res.json();
     return data.value ? JSON.parse(data.value) : {};
   } catch (err) {
@@ -19,7 +21,7 @@ async function loadDB(key) {
 
 async function saveDB(key, data) {
   try {
-    await fetch(`http://localhost:3001/api/db/${key}`, {
+    await fetch(`${API_BASE}/api/db/${key}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ value: JSON.stringify(data) })
