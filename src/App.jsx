@@ -298,14 +298,14 @@ export default function App() {
         {screen === "feed" && (
           <div className="fade-in">
             <div style={{ textAlign: "center", marginBottom: 32 }}>
-              <h1 style={{ fontSize: 32, fontWeight: 800, margin: "0 0 8px" }}>The Void's Echoes</h1>
-              <p style={{ color: "var(--color-text-secondary)", margin: 0, fontSize: 15 }}>Anonymous judgments from parallel universes.</p>
+              <h1 style={{ fontSize: 32, fontWeight: 800, margin: "0 0 8px" }}>none</h1>
+              <p style={{ color: "var(--color-text-secondary)", margin: 0, fontSize: 15 }}>nik zbi.</p>
             </div>
 
             {otherUsers.length === 0 ? (
               <div style={{ textAlign: "center", padding: "60px 0", color: "var(--color-text-tertiary)" }}>
                 <div style={{ fontSize: 48, marginBottom: 16 }}>🌌</div>
-                It's quiet here. Too quiet.
+                mfama chy y baba.
               </div>
             ) : (
               otherUsers.reverse().map(([id, u], index) => (
@@ -352,8 +352,8 @@ export default function App() {
         {screen === "consensus" && consensusData && (
           <div className="fade-in">
             <div style={{ textAlign: "center", marginBottom: 32 }}>
-              <h1 style={{ fontSize: 32, fontWeight: 800, margin: "0 0 8px" }}>Global Consensus</h1>
-              <p style={{ color: "var(--color-text-secondary)", margin: 0, fontSize: 15 }}>The definitive ranking, decided by the collective consciousness.</p>
+              <h1 style={{ fontSize: 32, fontWeight: 800, margin: "0 0 8px" }}>TOP imt3 TOP</h1>
+              <p style={{ color: "var(--color-text-secondary)", margin: 0, fontSize: 15 }}>eli m7otich zbi louwel nik n7i el acc imt3o.</p>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -389,8 +389,8 @@ export default function App() {
         {screen === "truth" && (
           <div className="fade-in">
             <div style={{ textAlign: "center", marginBottom: 32 }}>
-              <h1 style={{ fontSize: 32, fontWeight: 800, margin: "0 0 8px" }}>The Truth</h1>
-              <p style={{ color: "var(--color-text-secondary)", margin: 0, fontSize: 15 }}>Reveal the true nature of these entities. Attach your meme reactions.</p>
+              <h1 style={{ fontSize: 32, fontWeight: 800, margin: "0 0 8px" }}>T9o7iba</h1>
+              <p style={{ color: "var(--color-text-secondary)", margin: 0, fontSize: 15 }}>Attach your sticker for each one</p>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 20 }}>
@@ -430,8 +430,8 @@ export default function App() {
         {screen === "gallery" && (
           <div className="fade-in">
             <div style={{ textAlign: "center", marginBottom: 32 }}>
-              <h1 style={{ fontSize: 32, fontWeight: 800, margin: "0 0 8px" }}>Community Meme Gallery</h1>
-              <p style={{ color: "var(--color-text-secondary)", margin: 0, fontSize: 15 }}>See the truth assigned to each entity by the collective.</p>
+              <h1 style={{ fontSize: 32, fontWeight: 800, margin: "0 0 8px" }}>Meme Gallery</h1>
+              <p style={{ color: "var(--color-text-secondary)", margin: 0, fontSize: 15 }}>Mn3rech ema fma chkone bich iwali tho7ka.</p>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
