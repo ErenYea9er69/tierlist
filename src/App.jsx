@@ -40,8 +40,28 @@ function sanitizeText(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;')
     .replace(/`/g, '&#96;')
-    .slice(0, 250); // hard enforce 250 char limit
+    .replace(/\\/g, '&#92;')
+    .replace(/\0/g, '')
+    .slice(0, 250);
 }
+
+// SECURITY: Validate image sources - only allow our own item paths and valid data URIs
+function isSafeImgSrc(src) {
+  if (typeof src !== 'string') return false;
+  if (/^\/items\/\d{1,2}\.webp$/.test(src)) return true;
+  if (/^data:image\/(webp|png|jpeg|gif);base64,/.test(src) && src.length <= 100000) return true;
+  return false;
+}
+
+// SECURITY: Debounce utility to prevent API spam
+function debounce(fn, delay) {
+  let timer;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}
+const debouncedSaveDB = debounce(saveDB, 800);
 
 function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
 
@@ -148,6 +168,18 @@ export default function App() {
     const file = e.target.files[0];
     if (!file) return;
 
+    // SECURITY: Validate file type and size
+    const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp'];
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB max
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      alert('Only PNG, JPEG, GIF, and WebP images are allowed.');
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      alert('File too large. Max 5MB.');
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (event) => {
       const img = new Image();
@@ -161,6 +193,9 @@ export default function App() {
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         const dataUrl = canvas.toDataURL('image/webp', 0.8);
         
+        // SECURITY: Verify the output is a valid data URI
+        if (!isSafeImgSrc(dataUrl)) return;
+
         setTruth(prev => {
           const next = { ...prev, [item]: dataUrl };
           const newUsers = { ...users, [userId]: { ...users[userId], tierList, truth: next, messages, ts: Date.now() } };
@@ -339,7 +374,7 @@ export default function App() {
                       <div key={t} style={{ display: 'flex', gap: 12, alignItems: 'center', background: 'rgba(0,0,0,0.2)', padding: '6px 12px', borderRadius: 8 }}>
                         <span style={{ color: TIER_COLORS[t], fontWeight: 800, fontSize: 13, minWidth: 80, maxWidth: 100, textAlign: 'center', wordBreak: 'break-word', lineHeight: 1.2 }}>{t}</span>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, flex: 1 }}>
-                          {u.tierList[t].map(img => (
+                          {u.tierList[t].filter(img => isSafeImgSrc(img)).map(img => (
                             <img key={img} src={img} style={{ width: 36, height: 36, borderRadius: 6, objectFit: 'cover', border: '1px solid var(--color-border-secondary)' }} />
                           ))}
                         </div>
@@ -352,10 +387,10 @@ export default function App() {
                     <div style={{ marginTop: 16, paddingTop: 16, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                       <span style={{ fontSize: 11, color: 'var(--color-text-tertiary)', textTransform: 'uppercase', letterSpacing: 1 }}>Meme Reactions</span>
                       <div style={{ display: 'flex', gap: 12, marginTop: 8, overflowX: 'auto', paddingBottom: 8 }}>
-                        {Object.entries(u.truth).map(([item, base64]) => (
+                        {Object.entries(u.truth).filter(([item]) => isSafeImgSrc(item)).map(([item, base64]) => (
                           <div key={item} style={{ position: 'relative', width: 48, height: 48, flexShrink: 0 }}>
                             <img src={item} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8, opacity: 0.5 }} />
-                            <img src={base64} style={{ position: 'absolute', top: -4, right: -4, width: 24, height: 24, objectFit: 'contain', background: '#000', borderRadius: '50%', border: '1px solid var(--color-border-primary)' }} />
+                            {isSafeImgSrc(base64) && <img src={base64} style={{ position: 'absolute', top: -4, right: -4, width: 24, height: 24, objectFit: 'contain', background: '#000', borderRadius: '50%', border: '1px solid var(--color-border-primary)' }} />}
                           </div>
                         ))}
                       </div>
@@ -513,7 +548,7 @@ export default function App() {
                           if (text.trim() === "") delete next[item];
                           const newUsers = { ...users, [userId]: { ...users[userId], messages: next, ts: Date.now() } };
                           setUsers(newUsers);
-                          saveDB(STORAGE_KEY, newUsers);
+                          debouncedSaveDB(STORAGE_KEY, newUsers);
                           return next;
                         });
                       }}
