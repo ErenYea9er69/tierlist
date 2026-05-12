@@ -5,12 +5,12 @@ const TIER_COLORS = { "GOAT": "#e74c3c", "THAMER": "#e67e22", "IMT3NA": "#f1c40f
 const ITEMS = Array.from({ length: 19 }, (_, i) => `/items/${i + 1}.webp`);
 
 const TIER_SOUNDS = {
-  "GOAT": ["/audio/goat.mp3"],
-  "THAMER": ["/audio/thamer.MP3"],
-  "IMT3NA": ["/audio/IMT3NA.mp3"],
+  "GOAT": ["/audio/goat.mp3", "/audio/GOAT2.mp3"],
+  "THAMER": ["/audio/thamer.MP3", "/audio/THMER2.mp3"],
+  "IMT3NA": ["/audio/IMT3NA.mp3", "/audio/IMt3na2.mp3"],
   "MNAYEK 3LA ROU7O": ["/audio/MNAYEK 3LA ROU7O.MP3", "/audio/MNAYEK 3LA ROU7O2.MP3"],
   "L7AS Y LATIF": ["/audio/L7AS Y LATIF1.MP3", "/audio/L7AS Y LATIF2.MP3"],
-  "MLA 3OS": ["/audio/MLA 3OS.MP3", "/audio/MLA 3OS2.MP3", "/audio/MLA 3OS3.mp3"]
+  "MLA 3OS": ["/audio/MLA 3OS.MP3", "/audio/MLA 3OS2.MP3", "/audio/MLA 3OS3.mp3", "/audio/MLA3OS4.mp3"]
 };
 
 const STORAGE_KEY = "tierlist_users";
@@ -168,18 +168,17 @@ export default function App() {
       setConsensusData(getConsensus(newUsers));
       saveDB(STORAGE_KEY, newUsers);
 
-      // Play sound effect for the tier
-      if (TIER_SOUNDS[tier]) {
+      // Play sound effect
+      if (next.unranked && next.unranked.length === 0 && from === "unranked") {
+        // If finished ranking all, play end sound ONLY
+        const endAudio = new Audio("/audio/end.MP3");
+        endAudio.play().catch(err => console.log('Audio error:', err));
+      } else if (TIER_SOUNDS[tier]) {
+        // Play regular tier sound
         const sounds = TIER_SOUNDS[tier];
         const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
         const audio = new Audio(randomSound);
         audio.play().catch(err => console.log('Audio error:', err));
-      }
-
-      // If finished ranking all, play end sound
-      if (next.unranked && next.unranked.length === 0 && from === "unranked") {
-        const endAudio = new Audio("/audio/end.MP3");
-        endAudio.play().catch(err => console.log('Audio error:', err));
       }
 
       return next;
