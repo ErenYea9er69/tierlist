@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
-const TIERS = ["GOAT", "THAMER", "IMT3NA", "THAMER", "MLA 3OS", "MNAYEK 3LA ROU7O"];
-const TIER_COLORS = { "GOAT": "#e74c3c", "THAMER": "#e67e22", "IMT3NA": "#f1c40f", "THAMER": "#2ecc71", "MLA 3OS": "#3498db", "MNAYEK 3LA ROU7O": "#9b59b6" };
+const TIERS = ["GOAT", "L7AS Y LATIF", "IMT3NA", "5RAT KBIR", "MLA 3OS", "MNAYEK 3LA ROU7O"];
+const TIER_COLORS = { "GOAT": "#e74c3c", "L7AS Y LATIF": "#e67e22", "IMT3NA": "#f1c40f", "5RAT KBIR": "#2ecc71", "MLA 3OS": "#3498db", "MNAYEK 3LA ROU7O": "#9b59b6" };
 const ITEMS = Array.from({ length: 19 }, (_, i) => `/items/${i + 1}.webp`);
 
 const STORAGE_KEY = "tierlist_users";
@@ -34,7 +34,7 @@ async function saveDB(key, data) {
 function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
 
 function getConsensus(usersData) {
-  const counts = { "GOAT":{}, "THAMER":{}, "IMT3NA":{}, "THAMER":{}, "MLA 3OS":{}, "MNAYEK 3LA ROU7O":{} };
+  const counts = { "GOAT":{}, "L7AS Y LATIF":{}, "IMT3NA":{}, "5RAT KBIR":{}, "MLA 3OS":{}, "MNAYEK 3LA ROU7O":{} };
   Object.values(usersData).forEach(u => {
     if(!u.tierList) return;
     TIERS.forEach(t => {
@@ -66,7 +66,7 @@ function getConsensus(usersData) {
 export default function App() {
   const [screen, setScreen] = useState("loading"); // build | feed | consensus | truth
   const [userId, setUserId] = useState("");
-  const [tierList, setTierList] = useState({ "GOAT":[], "THAMER":[], "IMT3NA":[], "THAMER":[], "MLA 3OS":[], "MNAYEK 3LA ROU7O":[], unranked: [] });
+  const [tierList, setTierList] = useState({ "GOAT":[], "L7AS Y LATIF":[], "IMT3NA":[], "5RAT KBIR":[], "MLA 3OS":[], "MNAYEK 3LA ROU7O":[], unranked: [] });
   const [truth, setTruth] = useState({}); // { imgPath: base64 }
   const [users, setUsers] = useState({});
   const [dragging, setDragging] = useState(null); // { item, from }
@@ -94,7 +94,7 @@ export default function App() {
           if (dUsers[uid].tierList) setTierList(dUsers[uid].tierList);
           if (dUsers[uid].truth) setTruth(dUsers[uid].truth);
         } else {
-          setTierList({ "GOAT":[], "THAMER":[], "IMT3NA":[], "THAMER":[], "MLA 3OS":[], "MNAYEK 3LA ROU7O":[], unranked: shuffle(ITEMS) });
+          setTierList({ "GOAT":[], "L7AS Y LATIF":[], "IMT3NA":[], "5RAT KBIR":[], "MLA 3OS":[], "MNAYEK 3LA ROU7O":[], unranked: shuffle(ITEMS) });
         }
         setScreen("build");
       }
