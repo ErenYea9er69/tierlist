@@ -55,7 +55,7 @@ function getConsensus(usersData) {
       if (i > 0 && sorted[i][1] < sorted[i-1][1]) {
         rank = i + 1;
       }
-      if (rank > 5) break;
+      if (rank > 3) break;
       result.push({ img: sorted[i][0], count: sorted[i][1], rank });
     }
     consensus[t] = result;
