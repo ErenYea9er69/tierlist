@@ -209,7 +209,7 @@ export default function App() {
     reader.readAsDataURL(file);
   }
 
-  const otherUsers = Object.entries(users).filter(([id]) => id !== userId);
+  const feedUsers = Object.entries(users);
 
   if (screen === "loading") {
     return <div style={{ minHeight: "100vh", background: "var(--color-background-tertiary)", display: "flex", justifyContent: "center", alignItems: "center", color: "#fff", fontFamily: "'Inter', sans-serif" }}>Synchronizing DB...</div>;
@@ -356,13 +356,13 @@ export default function App() {
               <p style={{ color: "var(--color-text-secondary)", margin: 0, fontSize: 15 }}>nik zbi.</p>
             </div>
 
-            {otherUsers.length === 0 ? (
+            {feedUsers.length === 0 ? (
               <div style={{ textAlign: "center", padding: "60px 0", color: "var(--color-text-tertiary)" }}>
                 <div style={{ fontSize: 48, marginBottom: 16 }}>🌌</div>
                 mfama chy y baba.
               </div>
             ) : (
-              otherUsers.reverse().map(([id, u], index) => (
+              feedUsers.reverse().map(([id, u], index) => (
                 <div key={id + index} className="feed-card fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
                     <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--color-border-secondary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16 }}>👤</div>
