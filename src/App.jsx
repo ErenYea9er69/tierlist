@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
-const TIERS = ["S","A","B","C","D"];
-const TIER_COLORS = { S: "#e74c3c", A: "#e67e22", B: "#f1c40f", C: "#2ecc71", D: "#3498db" };
+const TIERS = ["GOAT", "THAMER", "IMT3NA", "THAMER", "MLA 3OS", "MNAYEK 3LA ROU7O"];
+const TIER_COLORS = { "GOAT": "#e74c3c", "THAMER": "#e67e22", "IMT3NA": "#f1c40f", "THAMER": "#2ecc71", "MLA 3OS": "#3498db", "MNAYEK 3LA ROU7O": "#9b59b6" };
 const ITEMS = Array.from({ length: 19 }, (_, i) => `/items/${i + 1}.webp`);
 
 const STORAGE_KEY = "tierlist_users";
@@ -34,7 +34,7 @@ async function saveDB(key, data) {
 function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
 
 function getConsensus(usersData) {
-  const counts = { S:{}, A:{}, B:{}, C:{}, D:{} };
+  const counts = { "GOAT":{}, "THAMER":{}, "IMT3NA":{}, "THAMER":{}, "MLA 3OS":{}, "MNAYEK 3LA ROU7O":{} };
   Object.values(usersData).forEach(u => {
     if(!u.tierList) return;
     TIERS.forEach(t => {
@@ -66,7 +66,7 @@ function getConsensus(usersData) {
 export default function App() {
   const [screen, setScreen] = useState("loading"); // build | feed | consensus | truth
   const [userId, setUserId] = useState("");
-  const [tierList, setTierList] = useState({ S:[], A:[], B:[], C:[], D:[], unranked: [] });
+  const [tierList, setTierList] = useState({ "GOAT":[], "THAMER":[], "IMT3NA":[], "THAMER":[], "MLA 3OS":[], "MNAYEK 3LA ROU7O":[], unranked: [] });
   const [truth, setTruth] = useState({}); // { imgPath: base64 }
   const [users, setUsers] = useState({});
   const [dragging, setDragging] = useState(null); // { item, from }
@@ -94,7 +94,7 @@ export default function App() {
           if (dUsers[uid].tierList) setTierList(dUsers[uid].tierList);
           if (dUsers[uid].truth) setTruth(dUsers[uid].truth);
         } else {
-          setTierList({ S:[], A:[], B:[], C:[], D:[], unranked: shuffle(ITEMS) });
+          setTierList({ "GOAT":[], "THAMER":[], "IMT3NA":[], "THAMER":[], "MLA 3OS":[], "MNAYEK 3LA ROU7O":[], unranked: shuffle(ITEMS) });
         }
         setScreen("build");
       }
@@ -184,7 +184,7 @@ export default function App() {
         .header-btn.active { background: var(--color-background-secondary); border-color: var(--color-border-primary); color: #fff; }
 
         .tier-row { display:flex; align-items:stretch; margin-bottom:6px; border-radius:12px; overflow:hidden; min-height:64px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
-        .tier-label { width:64px; min-width:64px; display:flex; align-items:center; justify-content:center; font-size:26px; font-weight:800; color:#111; flex-shrink:0; text-shadow: 0 1px 2px rgba(255,255,255,0.3); }
+        .tier-label { width:120px; min-width:120px; display:flex; align-items:center; justify-content:center; text-align:center; padding:0 8px; font-size:15px; font-weight:800; color:#111; flex-shrink:0; text-shadow: 0 1px 2px rgba(255,255,255,0.3); line-height:1.2; word-break:break-word; }
         .tier-drop { flex:1; display:flex; flex-wrap:wrap; gap:8px; padding:10px; background: rgba(255,255,255,0.03); border:1.5px dashed transparent; transition:all 0.2s; min-height:64px; align-items:center; }
         .tier-drop.drag-over { border-color: var(--color-border-primary); background: rgba(255,255,255,0.06); }
         
@@ -318,8 +318,8 @@ export default function App() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                     {TIERS.map(t => u.tierList[t] && u.tierList[t].length > 0 && (
                       <div key={t} style={{ display: 'flex', gap: 12, alignItems: 'center', background: 'rgba(0,0,0,0.2)', padding: '6px 12px', borderRadius: 8 }}>
-                        <span style={{ color: TIER_COLORS[t], fontWeight: 800, fontSize: 18, width: 24 }}>{t}</span>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                        <span style={{ color: TIER_COLORS[t], fontWeight: 800, fontSize: 13, minWidth: 80, maxWidth: 100, textAlign: 'center', wordBreak: 'break-word', lineHeight: 1.2 }}>{t}</span>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, flex: 1 }}>
                           {u.tierList[t].map(img => (
                             <img key={img} src={img} style={{ width: 36, height: 36, borderRadius: 6, objectFit: 'cover', border: '1px solid var(--color-border-secondary)' }} />
                           ))}
