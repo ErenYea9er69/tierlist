@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 const TIERS = ["GOAT", "THAMER", "IMT3NA", "MNAYEK 3LA ROU7O", "L7AS Y LATIF", "MLA 3OS"];
 const TIER_COLORS = { "GOAT": "#e74c3c", "THAMER": "#e67e22", "IMT3NA": "#f1c40f", "MNAYEK 3LA ROU7O": "#2ecc71", "L7AS Y LATIF": "#3498db", "MLA 3OS": "#9b59b6" };
@@ -29,6 +29,18 @@ async function saveDB(key, data) {
   } catch (err) {
     console.error('Error saving DB:', err);
   }
+}
+
+// SECURITY: Sanitize user-generated text to prevent XSS
+function sanitizeText(str) {
+  if (typeof str !== 'string') return '';
+  return str
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+    .replace(/`/g, '&#96;')
+    .slice(0, 250); // hard enforce 250 char limit
 }
 
 function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
@@ -78,7 +90,10 @@ export default function App() {
   useEffect(() => {
     let uid = localStorage.getItem("tierlist_uid");
     if (!uid) {
-      uid = "anon_" + Math.random().toString(36).substring(2, 9);
+      // SECURITY: Use crypto-grade random ID instead of Math.random
+      const arr = new Uint8Array(8);
+      crypto.getRandomValues(arr);
+      uid = "anon_" + Array.from(arr).map(b => b.toString(36)).join('').substring(0, 8);
       localStorage.setItem("tierlist_uid", uid);
     }
     setUserId(uid);
@@ -542,8 +557,8 @@ export default function App() {
                     </div>
                     <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
                       {itemMessages.map((msg, idx) => (
-                        <div key={idx} style={{ background: 'rgba(255,255,255,0.04)', padding: 12, borderRadius: 8, fontSize: 14, color: 'var(--color-text-secondary)', borderLeft: '3px solid var(--color-border-primary)' }}>
-                          "{msg}"
+                        <div key={idx} style={{ background: 'rgba(255,255,255,0.04)', padding: 12, borderRadius: 8, fontSize: 14, color: 'var(--color-text-secondary)', borderLeft: '3px solid var(--color-border-primary)', wordBreak: 'break-word', overflowWrap: 'break-word' }}>
+                          "{sanitizeText(msg)}"
                         </div>
                       ))}
                     </div>
