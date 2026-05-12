@@ -68,6 +68,7 @@ export default function App() {
   const [userId, setUserId] = useState("");
   const [tierList, setTierList] = useState({ "GOAT":[], "THAMER":[], "IMT3NA":[], "MNAYEK 3LA ROU7O":[], "L7AS Y LATIF":[], "MLA 3OS":[], unranked: [] });
   const [truth, setTruth] = useState({}); // { imgPath: base64 }
+  const [messages, setMessages] = useState({}); // { imgPath: text }
   const [users, setUsers] = useState({});
   const [dragging, setDragging] = useState(null); // { item, from }
   const [consensusData, setConsensusData] = useState(null);
@@ -93,6 +94,7 @@ export default function App() {
         if (dUsers[uid]) {
           if (dUsers[uid].tierList) setTierList(dUsers[uid].tierList);
           if (dUsers[uid].truth) setTruth(dUsers[uid].truth);
+          if (dUsers[uid].messages) setMessages(dUsers[uid].messages);
         } else {
           setTierList({ "GOAT":[], "THAMER":[], "IMT3NA":[], "MNAYEK 3LA ROU7O":[], "L7AS Y LATIF":[], "MLA 3OS":[], unranked: shuffle(ITEMS) });
         }
@@ -117,7 +119,7 @@ export default function App() {
       next[from] = next[from].filter(i => i !== item);
       next[tier] = [...(next[tier]||[]), item];
       
-      const newUsers = { ...users, [userId]: { ...users[userId], tierList: next, truth, ts: Date.now() } };
+      const newUsers = { ...users, [userId]: { ...users[userId], tierList: next, truth, messages, ts: Date.now() } };
       setUsers(newUsers);
       setConsensusData(getConsensus(newUsers));
       saveDB(STORAGE_KEY, newUsers);
@@ -146,7 +148,7 @@ export default function App() {
         
         setTruth(prev => {
           const next = { ...prev, [item]: dataUrl };
-          const newUsers = { ...users, [userId]: { ...users[userId], tierList, truth: next, ts: Date.now() } };
+          const newUsers = { ...users, [userId]: { ...users[userId], tierList, truth: next, messages, ts: Date.now() } };
           setUsers(newUsers);
           saveDB(STORAGE_KEY, newUsers);
           return next;
@@ -241,7 +243,9 @@ export default function App() {
           { id: 'feed', icon: '🌍', label: 'Feed' },
           { id: 'consensus', icon: '📊', label: 'Consensus' },
           { id: 'truth', icon: '👁️', label: 'The Truth' },
-          { id: 'gallery', icon: '🖼️', label: 'Meme Gallery' }
+          { id: 'gallery', icon: '🖼️', label: 'Meme Gallery' },
+          { id: 'message', icon: '💬', label: 'El Ketba' },
+          { id: 'msg_gallery', icon: '📜', label: 'Msg Gallery' }
         ].map(t => (
           <button key={t.id} onClick={() => setScreen(t.id)} className={`header-btn ${screen === t.id ? 'active' : ''}`}>
             <span style={{ fontSize: 16 }}>{t.icon}</span> {t.label}
@@ -464,6 +468,88 @@ export default function App() {
                   No memes uploaded yet. Be the first in 'The Truth' tab!
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* SCREEN: MESSAGE */}
+        {screen === "message" && (
+          <div className="fade-in">
+            <div style={{ textAlign: "center", marginBottom: 32 }}>
+              <h1 style={{ fontSize: 32, fontWeight: 800, margin: "0 0 8px" }}>El Ketba</h1>
+              <p style={{ color: "var(--color-text-secondary)", margin: 0, fontSize: 15 }}>Speak your mind. Max 250 chars per person.</p>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 20 }}>
+              {ITEMS.map(item => (
+                <div key={item} className="truth-card fade-in">
+                  <div className="truth-left">
+                    <img src={item} alt="original" />
+                  </div>
+                  <div className="truth-right" style={{ padding: 12, display: 'flex', flexDirection: 'column' }}>
+                    <textarea 
+                      placeholder="Write your message here..."
+                      maxLength={250}
+                      value={messages[item] || ""}
+                      onChange={(e) => {
+                        const text = e.target.value;
+                        setMessages(prev => {
+                          const next = { ...prev, [item]: text };
+                          if (text.trim() === "") delete next[item];
+                          const newUsers = { ...users, [userId]: { ...users[userId], messages: next, ts: Date.now() } };
+                          setUsers(newUsers);
+                          saveDB(STORAGE_KEY, newUsers);
+                          return next;
+                        });
+                      }}
+                      style={{ 
+                        flex: 1, width: '100%', background: 'rgba(0,0,0,0.4)', 
+                        border: '1px solid var(--color-border-secondary)', borderRadius: 8, 
+                        color: '#fff', padding: 10, resize: 'none', fontFamily: 'inherit', fontSize: 13
+                      }}
+                    />
+                    <div style={{ textAlign: 'right', fontSize: 11, color: 'var(--color-text-tertiary)', marginTop: 4 }}>
+                      {(messages[item] || "").length}/250
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* SCREEN: MSG GALLERY */}
+        {screen === "msg_gallery" && (
+          <div className="fade-in">
+            <div style={{ textAlign: "center", marginBottom: 32 }}>
+              <h1 style={{ fontSize: 32, fontWeight: 800, margin: "0 0 8px" }}>Message Gallery</h1>
+              <p style={{ color: "var(--color-text-secondary)", margin: 0, fontSize: 15 }}>The unfiltered thoughts of the void.</p>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+              {ITEMS.map(item => {
+                const itemMessages = Object.values(users)
+                  .filter(u => u.messages && u.messages[item] && u.messages[item].trim() !== "")
+                  .map(u => u.messages[item]);
+                  
+                if (itemMessages.length === 0) return null;
+                
+                return (
+                  <div key={item} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--color-border-secondary)', borderRadius: 16, overflow: 'hidden' }}>
+                    <div style={{ background: 'rgba(0,0,0,0.3)', padding: '12px 20px', borderBottom: '1px solid var(--color-border-secondary)', display: 'flex', alignItems: 'center', gap: 16 }}>
+                      <img src={item} style={{ width: 48, height: 48, borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--color-border-primary)' }} />
+                      <span style={{ fontSize: 16, fontWeight: 600, color: 'var(--color-text-primary)' }}>Community Thoughts</span>
+                    </div>
+                    <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
+                      {itemMessages.map((msg, idx) => (
+                        <div key={idx} style={{ background: 'rgba(255,255,255,0.04)', padding: 12, borderRadius: 8, fontSize: 14, color: 'var(--color-text-secondary)', borderLeft: '3px solid var(--color-border-primary)' }}>
+                          "{msg}"
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
