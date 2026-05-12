@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 const TIERS = ["GOAT", "THAMER", "IMT3NA", "MNAYEK 3LA ROU7O", "L7AS Y LATIF", "MLA 3OS"];
-const TIER_COLORS = { "GOAT": "#e74c3c", "THAMER": "#e67e22", "IMT3NA": "#f1c40f", "MNAYEK 3LA ROU7O": "#9b59b6", "L7AS Y LATIF": "#2ecc71", "MLA 3OS": "#3498db" };
+const TIER_COLORS = { "GOAT": "#e74c3c", "THAMER": "#e67e22", "IMT3NA": "#f1c40f", "MNAYEK 3LA ROU7O": "#2ecc71", "L7AS Y LATIF": "#3498db", "MLA 3OS": "#9b59b6" };
 const ITEMS = Array.from({ length: 19 }, (_, i) => `/items/${i + 1}.webp`);
 
 const STORAGE_KEY = "tierlist_users";
