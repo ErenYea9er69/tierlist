@@ -255,8 +255,8 @@ export default function App() {
         {screen === "build" && (
           <div className="fade-in">
             <div style={{ textAlign: "center", marginBottom: 32 }}>
-              <h1 style={{ fontSize: 32, fontWeight: 800, margin: "0 0 8px", background: "linear-gradient(90deg, #fff, #888)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Your Arena</h1>
-              <p style={{ color: "var(--color-text-secondary)", margin: 0, fontSize: 15 }}>Drag and drop to shape your legacy. Auto-saved to the void.</p>
+              <h1 style={{ fontSize: 32, fontWeight: 800, margin: "0 0 8px", background: "linear-gradient(90deg, #fff, #888)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>YALA Y BABA</h1>
+              <p style={{ color: "var(--color-text-secondary)", margin: 0, fontSize: 15 }}>Drag and drop to rank hel 5rata imt3 zbi.</p>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -278,7 +278,7 @@ export default function App() {
             </div>
 
             <div style={{ marginTop: 24 }}>
-              <h3 style={{ fontSize: 14, color: "var(--color-text-secondary)", margin: "0 0 10px", textTransform: "uppercase", letterSpacing: 1 }}>Unranked Arsenal</h3>
+              <h3 style={{ fontSize: 14, color: "var(--color-text-secondary)", margin: "0 0 10px", textTransform: "uppercase", letterSpacing: 1 }}>Unranked</h3>
               <div className="unranked-pool"
                 onDragOver={e=>e.preventDefault()}
                 onDrop={()=>handleDrop("unranked")}>
