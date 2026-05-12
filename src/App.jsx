@@ -527,7 +527,7 @@ export default function App() {
           <div className="fade-in">
             <div style={{ textAlign: "center", marginBottom: 32 }}>
               <h1 style={{ fontSize: 32, fontWeight: 800, margin: "0 0 8px" }}>El Ketba</h1>
-              <p style={{ color: "var(--color-text-secondary)", margin: 0, fontSize: 15 }}>5out r7tik w tkalem w fr8 9lbik.</p>
+              <p style={{ color: "var(--color-text-secondary)", margin: 0, fontSize: 15 }}>5outh r7tik, tkalem w fr8 9lbik.</p>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 20 }}>
